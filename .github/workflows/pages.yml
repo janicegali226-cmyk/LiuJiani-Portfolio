@@ -26,8 +26,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      # 关键步骤：安装 al-folio 必须的系统工具 ImageMagick
-      - name: Install System Dependencies (ImageMagick)
+      # 关键修复步骤：安装 al-folio 必须的系统工具 ImageMagick
+      # 这将解决之前的 "gem failed" 错误
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y imagemagick
@@ -38,6 +39,7 @@ jobs:
           ruby-version: '3.1' # 使用稳定的 3.1 版本
           bundler-cache: true # 自动处理 Gem 缓存
 
+      # 回归标准安装命令，解决 "Action not found" 错误
       - name: Install Dependencies
         run: |
           gem install bundler
