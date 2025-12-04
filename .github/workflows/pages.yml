@@ -24,15 +24,15 @@ jobs:
           submodules: true
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
-      # 1. 安装必要的系统库 (保持不变，这步是必须的)
+      # 1. 安装必要的系统库 (保持不变，这是基础)
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libmagickwand-dev imagemagick
+          sudo apt-get install -y libmagickwand-dev imagemagick webp
 
-      # 2. 设置 Ruby (关闭缓存，防止读取到错误的旧缓存)
+      # 2. 设置 Ruby (⚠️关键：关闭缓存，防止读取到错误的旧数据)
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -40,7 +40,7 @@ jobs:
           bundler-cache: false 
 
       # 3. ⚠️ 核心修复：强行删除 Gemfile.lock
-      # 这会强制 Bundler 根据当前 Linux 环境重新计算所有依赖版本
+      # 这会强制 Bundler 忽略旧版本，根据当前的 Ubuntu 环境重新下载最合适的插件
       - name: Install Dependencies
         run: |
           rm -f Gemfile.lock
