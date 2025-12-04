@@ -24,22 +24,23 @@ jobs:
           submodules: true
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
-      # 关键修复步骤：安装 al-folio 必须的系统工具 ImageMagick
-      # 这将解决之前的 "gem failed" 错误
+      # ----------------------------------------------------------------
+      # ⚠️ 关键修改：安装 libmagickwand-dev (开发头文件)
+      # 这是解决 "gem install rmagick" 失败的最终解药
+      # ----------------------------------------------------------------
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y imagemagick
+          sudo apt-get install -y libmagickwand-dev imagemagick webp
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1' # 使用稳定的 3.1 版本
-          bundler-cache: true # 自动处理 Gem 缓存
+          ruby-version: '3.1'
+          bundler-cache: true 
 
-      # 回归标准安装命令，解决 "Action not found" 错误
       - name: Install Dependencies
         run: |
           gem install bundler
