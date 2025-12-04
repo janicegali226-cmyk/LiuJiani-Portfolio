@@ -24,25 +24,26 @@ jobs:
           submodules: true
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v4
 
-      # ----------------------------------------------------------------
-      # ⚠️ 关键修改：安装 libmagickwand-dev (开发头文件)
-      # 这是解决 "gem install rmagick" 失败的最终解药
-      # ----------------------------------------------------------------
+      # 1. 安装必要的系统库 (保持不变，这步是必须的)
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libmagickwand-dev imagemagick webp
+          sudo apt-get install -y libmagickwand-dev imagemagick
 
+      # 2. 设置 Ruby (关闭缓存，防止读取到错误的旧缓存)
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'
-          bundler-cache: true 
+          ruby-version: '3.1' 
+          bundler-cache: false 
 
+      # 3. ⚠️ 核心修复：强行删除 Gemfile.lock
+      # 这会强制 Bundler 根据当前 Linux 环境重新计算所有依赖版本
       - name: Install Dependencies
         run: |
+          rm -f Gemfile.lock
           gem install bundler
           bundle install
 
